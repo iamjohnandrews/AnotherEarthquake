@@ -15,8 +15,7 @@
 }
 
 - (void)populateText:(Earthquake *)earthquake {
-    self.textLabel.text = [self convertTimeToText:earthquake.time];
-    self.detailTextLabel.text = earthquake.magnitude.stringValue;
+    self.textView.text = [NSString stringWithFormat:@"%@\n%@\n%@", [self convertTimeToText:earthquake.time], earthquake.magnitude, earthquake.place];
 }
 
 - (NSString *)convertTimeToText:(NSNumber *)time {

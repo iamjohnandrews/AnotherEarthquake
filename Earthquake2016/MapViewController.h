@@ -7,8 +7,11 @@
 //
 
 #import "ViewController.h"
+#import <MapKit/MapKit.h>
+#import "Earthquake.h"
 
-@interface MapViewController : UIViewController
+@interface MapViewController : UIViewController <MKMapViewDelegate>
 @property (nonatomic, strong) Earthquake *earthquake;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end

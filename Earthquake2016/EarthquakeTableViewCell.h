@@ -11,5 +11,6 @@
 
 @interface EarthquakeTableViewCell : UITableViewCell
 @property (nonatomic, strong) Earthquake *earthquake;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 @end

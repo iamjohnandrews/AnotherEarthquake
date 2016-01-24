@@ -14,6 +14,7 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
 
 @interface ViewController ()
 @property (nonatomic, strong) NSMutableArray *earthquakes;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 @implementation ViewController
@@ -22,6 +23,17 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
     [super viewDidLoad];
     [self retrieveEathquakesJSON];
     self.tableView.dataSource = self;
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.spinner.center = self.view.center;
+    [self.tableView addSubview: self.spinner];
+    [self.tableView bringSubviewToFront:self.spinner];
+    self.spinner.hidesWhenStopped = YES;
+    self.spinner.hidden = NO;
+    [self.spinner startAnimating];
 }
 
 #pragma mark Networking Methods
@@ -40,6 +52,7 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
             [self parseResponse:dict];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.tableView reloadData];
+                [weakSelf.spinner stopAnimating];
             });
         }
     }] resume];
