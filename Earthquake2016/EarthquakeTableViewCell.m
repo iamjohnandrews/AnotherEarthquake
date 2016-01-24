@@ -10,14 +10,23 @@
 
 @implementation EarthquakeTableViewCell
 
-- (void)awakeFromNib {
-    // Initialization code
+- (void)setEarthquake:(Earthquake *)earthquake {
+    [self populateText:earthquake];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
+- (void)populateText:(Earthquake *)earthquake {
+    self.textLabel.text = [self convertTimeToText:earthquake.time];
+    self.detailTextLabel.text = earthquake.magnitude.stringValue;
+}
 
-    // Configure the view for the selected state
+- (NSString *)convertTimeToText:(NSNumber *)time {
+    NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:time.doubleValue];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    return [dateFormatter stringFromDate:date];
 }
 
 @end

@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Earthquake.h"
 
 @interface EarthquakeTableViewCell : UITableViewCell
+@property (nonatomic, strong) Earthquake *earthquake;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 
-@interface MapViewController : ViewController
+@interface MapViewController : UIViewController
+@property (nonatomic, strong) Earthquake *earthquake;
 
 @end

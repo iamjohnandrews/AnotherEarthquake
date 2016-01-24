@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Earthquake.h"
+#import "EarthquakeTableViewCell.h"
+#import "MapViewController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITableViewDataSource>
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 
 @end

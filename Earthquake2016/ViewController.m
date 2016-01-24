@@ -10,17 +10,83 @@
  */
 #import "ViewController.h"
 
-const NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/";
+static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 @interface ViewController ()
-
+@property (nonatomic, strong) NSMutableArray *earthquakes;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self retrieveEathquakesJSON];
+    self.tableView.dataSource = self;
+}
 
+#pragma mark Networking Methods
+
+- (void)retrieveEathquakesJSON {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:earthquakeAPIBaseURL]];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    ViewController *__weak weakSelf = self;
+    
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (!error && data) {
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
+                                                                 options:0
+                                                                   error:nil];
+            NSLog(@"Response = %@", dict);
+            [self parseResponse:dict];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.tableView reloadData];
+            });
+        }
+    }] resume];
+}
+
+- (void)parseResponse:(NSDictionary *)jsonDict {
+    NSArray *allEarthquakess = [jsonDict objectForKey:@"features"];
+    self.earthquakes = [NSMutableArray array];
+    
+    for (NSDictionary *details in allEarthquakess) {
+        NSDictionary *properties = [details objectForKey:@"properties"];
+        NSDictionary *geometry = [details objectForKey:@"geometry"];
+        
+        Earthquake *earthquake = [[Earthquake alloc] init];
+        earthquake.place = [properties objectForKey:@"place"];
+        earthquake.time = [properties objectForKey:@"time"];
+        earthquake.title = [properties objectForKey:@"title"];
+        earthquake.magnitude = [properties objectForKey:@"mag"];
+        earthquake.coordinates = [geometry objectForKey:@"coordinates"];
+        
+        [self.earthquakes addObject:earthquake];
+    }
+}
+
+#pragma mark TableView Datasource Methods
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.earthquakes.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    EarthquakeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"earthquakeCell" forIndexPath:indexPath];
+    cell.earthquake = self.earthquakes[indexPath.row];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    return cell;
+}
+
+#pragma mark Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(EarthquakeTableViewCell *)sender {
+    if ([segue.identifier isEqualToString:@"toMapSegue"]) {
+        MapViewController *mapViewController = segue.destinationViewController;
+        NSUInteger selectedRow = [[self.tableView indexPathForCell:sender] row];
+        sender.selected = NO;
+        mapViewController.earthquake = self.earthquakes[selectedRow];
+    }
 }
 
 @end
