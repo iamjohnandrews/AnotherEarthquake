@@ -26,7 +26,7 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    self.title = @"EARTHQUAKES";
+    self.title = @"Week of Earthquakes";
     if (!self.earthquakes) {
         [self displaySpinner];
     }
