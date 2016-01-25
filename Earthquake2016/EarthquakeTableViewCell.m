@@ -22,8 +22,7 @@
     NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:time.doubleValue];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     
     return [dateFormatter stringFromDate:date];
 }

@@ -5,9 +5,7 @@
 //  Created by John Andrews on 1/24/16.
 //  Copyright © 2016 John Andrews. All rights reserved.
 //
-/*
- We want an iOS application that lists historical earthquakes with the ability to see more details about each entry. The app should list date and magnitude of each earthquake in a TableView or similar UI. Tapping on an earthquake should provide more detailed information, such as location.
- */
+
 #import "ViewController.h"
 
 static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
@@ -23,10 +21,18 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
     [super viewDidLoad];
     [self retrieveEathquakesJSON];
     self.tableView.dataSource = self;
+    self.tableView.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    self.title = @"EARTHQUAKES";
+    if (!self.earthquakes) {
+        [self displaySpinner];
+    }
+}
+
+- (void)displaySpinner {
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.spinner.center = self.view.center;
     [self.tableView addSubview: self.spinner];
@@ -48,7 +54,6 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
                                                                  options:0
                                                                    error:nil];
-            NSLog(@"Response = %@", dict);
             [self parseResponse:dict];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.tableView reloadData];
@@ -77,7 +82,11 @@ static NSString *earthquakeAPIBaseURL = @"http://earthquake.usgs.gov/earthquakes
     }
 }
 
-#pragma mark TableView Datasource Methods
+#pragma mark TableView Methods
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 70;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.earthquakes.count;

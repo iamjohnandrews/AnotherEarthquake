@@ -11,7 +11,7 @@
 #import "EarthquakeTableViewCell.h"
 #import "MapViewController.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource>
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 

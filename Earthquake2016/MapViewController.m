@@ -25,7 +25,7 @@
     zoomLocation.latitude = [self.earthquake.coordinates[1] floatValue];
     zoomLocation.longitude= [self.earthquake.coordinates[0] floatValue];
     
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 5000, 5000);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 100000, 100000);
     [self.mapView setRegion:viewRegion animated:YES];
     
     MKPointAnnotation *myAnnotation = [[MKPointAnnotation alloc] init];
